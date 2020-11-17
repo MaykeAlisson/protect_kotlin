@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Protect</string>
+
+    <!-- Menu -->
+    <string name="sobre">Sobre</string>
+    <string name="enviar_base_de_dados">Enviar base de dados</string>
+    <string name="importar_base_de_dados">Importar base de dados</string>
+
+
 </resources>
