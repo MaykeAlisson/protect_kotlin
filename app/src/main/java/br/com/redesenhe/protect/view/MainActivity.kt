@@ -2,6 +2,7 @@ package br.com.redesenhe.protect.view
 
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -34,13 +35,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         observe()
     }
 
-    @Override
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
-    @Override
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.menu_main_sobre -> {
@@ -59,7 +58,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View) {
         when(view.id){
             R.id.activity_main_mostrarSenha -> {
-                Toast.makeText(this, "Ocultar senha", Toast.LENGTH_LONG).show()
+                if(activity_main_mostrarSenha.isChecked){
+                    activity_main_textSenha.setInputType(InputType.TYPE_CLASS_TEXT)
+                    return
+                }
+                activity_main_textSenha.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
+
             }
             R.id.activity_main_btnEntrar -> {
                 startActivity(Intent(this, HomeActivity::class.java))
@@ -79,5 +83,16 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      */
     private fun observe() {}
 
+    /**
+     * Autentica usuário
+     */
+    private fun handleLogin() {
+        val senha = activity_main_textSenha.text.toString()
 
+        if (senha.trim().isEmpty()) {
+            activity_main_textSenha.error = "Senha Obrigatoria!"
+            return
+        }
+        mViewModel.doLogin(senha)
+    }
 }
