@@ -38,6 +38,7 @@ class UsuarioRepository private constructor(context: Context) {
         val c: Cursor = get.rawQuery(sql, null)
         val count = c.count
         c.close()
+        Log.i(LOG, "DB existeUsuario")
         return count > 0
     }
 

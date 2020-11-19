@@ -1,11 +1,13 @@
 package br.com.redesenhe.protect.view
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import br.com.redesenhe.protect.R
 import br.com.redesenhe.protect.viewmodel.HomeViewModel
@@ -70,6 +72,15 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
         Toast.makeText(this, "Nome do Grupo $nomeGrupo", Toast.LENGTH_LONG).show()
     }
 
+    fun createGrupo(nome: String){
+        if (nome.trim().isEmpty()){
+            Toast.makeText(this, "Informe um nome Valido", Toast.LENGTH_LONG).show()
+            return
+        }
+
+        mViewModel.doCreate(nome)
+    }
+
     /**
      * Inicializa os eventos de click
      */
@@ -80,6 +91,15 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
     /**
      * Observa ViewModel
      */
-    private fun observe() {}
+    private fun observe() {
+        mViewModel.create.observe(this, Observer {
+            if (it.success()) {
+                Toast.makeText(applicationContext, "Recarrega Lista", Toast.LENGTH_SHORT).show()
+            } else {
+                val msg = it.falure()
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
 
 }

@@ -1,13 +1,16 @@
 package br.com.redesenhe.protect.view
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import br.com.redesenhe.protect.R
 import br.com.redesenhe.protect.service.constants.ProtectConstants
@@ -55,18 +58,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         return super.onOptionsItemSelected(item)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(view: View) {
         when(view.id){
             R.id.activity_main_mostrarSenha -> {
                 if(activity_main_mostrarSenha.isChecked){
-                    activity_main_textSenha.setInputType(InputType.TYPE_CLASS_TEXT)
+                    activity_main_textSenha.inputType = InputType.TYPE_CLASS_TEXT
                     return
                 }
-                activity_main_textSenha.setInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
+                activity_main_textSenha.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
 
             }
             R.id.activity_main_btnEntrar -> {
-                startActivity(Intent(this, HomeActivity::class.java))
+                handleLogin()
             }
         }
     }
@@ -76,16 +80,27 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
      */
     private fun setListeners() {
         activity_main_btnEntrar.setOnClickListener(this)
+        activity_main_mostrarSenha.setOnClickListener(this)
     }
 
     /**
      * Observa ViewModel
      */
-    private fun observe() {}
+    private fun observe() {
+        mViewModel.login.observe(this, Observer {
+            if (it.success()) {
+                startActivity(Intent(this, HomeActivity::class.java))
+            } else {
+                val msg = it.falure()
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+            }
+        })
+    }
 
     /**
      * Autentica usuário
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun handleLogin() {
         val senha = activity_main_textSenha.text.toString()
 
