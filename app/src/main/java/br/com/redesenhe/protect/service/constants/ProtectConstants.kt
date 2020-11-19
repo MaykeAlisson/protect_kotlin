@@ -10,4 +10,13 @@ class ProtectConstants private constructor(){
         const val VERSION = "1.0.0"
     }
 
+    object DATA_BASE {
+        const val NAME = "db_protect"
+        const val VERSION = 1
+    }
+
+    object SYSTEM {
+        const val LOG = "protect_log"
+    }
+
 }
