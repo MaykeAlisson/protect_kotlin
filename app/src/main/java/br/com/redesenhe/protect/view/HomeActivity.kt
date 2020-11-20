@@ -5,11 +5,19 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import br.com.redesenhe.protect.R
+import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.GRUPO_ID
+import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.GRUPO_NOME
+import br.com.redesenhe.protect.service.listener.GrupoListener
+import br.com.redesenhe.protect.view.adapter.GrupoAdaper
 import br.com.redesenhe.protect.viewmodel.HomeViewModel
 import kotlinx.android.synthetic.main.activity_home.*
 
@@ -17,6 +25,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
     CustomDialogNovoGrupo.CustomDialogListener {
 
     private lateinit var mViewModel: HomeViewModel
+    private lateinit var mListener: GrupoListener
+    private val mAdapter = GrupoAdaper()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,10 +34,32 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
 
         mViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
 
+        val recycler = findViewById<RecyclerView>(R.id.activity_home_listView)
+        recycler.layoutManager = LinearLayoutManager(this)
+        recycler.addItemDecoration(DividerItemDecoration(applicationContext, LinearLayout.VERTICAL))
+        recycler.adapter = mAdapter
+
         setSupportActionBar(findViewById(R.id.activty_home_toolbar))
 
         supportActionBar?.apply {
             title = "Home"
+        }
+
+        // Eventos disparados ao clicar nas linhas da RecyclerView
+        mListener = object : GrupoListener {
+            override fun onListClick(id: Int) {
+                val grupo = mAdapter.getGrupo(id)
+                val intent = Intent(applicationContext, ListRegistroActivity::class.java)
+                val bundle = Bundle()
+                bundle.putInt(GRUPO_ID, id)
+                bundle.putString(GRUPO_NOME, grupo.nome)
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
+
+            override fun onDeleteClick(id: Int) {
+            }
+
         }
 
         // Inicializa eventos
@@ -69,7 +101,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
     }
 
     override fun applyText(nomeGrupo: String) {
-        Toast.makeText(this, "Nome do Grupo $nomeGrupo", Toast.LENGTH_LONG).show()
+        createGrupo(nomeGrupo)
     }
 
     fun createGrupo(nome: String){
@@ -94,12 +126,24 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
     private fun observe() {
         mViewModel.create.observe(this, Observer {
             if (it.success()) {
-                Toast.makeText(applicationContext, "Recarrega Lista", Toast.LENGTH_SHORT).show()
+                mAdapter.attachListener(mListener)
+                mViewModel.getAll()
             } else {
                 val msg = it.falure()
                 Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
             }
         })
+        mViewModel.grupos.observe(this, Observer {
+            if (it.count() > 0) {
+                mAdapter.updateList(it)
+            }
+        })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mAdapter.attachListener(mListener)
+        mViewModel.getAll()
     }
 
 }

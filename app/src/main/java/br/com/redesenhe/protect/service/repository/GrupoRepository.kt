@@ -64,7 +64,7 @@ class GrupoRepository private constructor(context: Context) {
 
                 list.add(grupo)
             }
-            c.close()
+            c?.close()
             list
         }catch (e: Exception){
             Log.e(LOG, "Erro ao salvar grupo " + e.message)
@@ -75,9 +75,6 @@ class GrupoRepository private constructor(context: Context) {
     fun update(grupo: GrupoModel): Boolean {
 
         return try {
-
-
-
             true
         }catch (e: Exception){
             false
