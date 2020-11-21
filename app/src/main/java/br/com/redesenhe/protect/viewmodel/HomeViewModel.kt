@@ -29,7 +29,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
         val data = SimpleDateFormat("dd-MM-yyyy", Locale.US).format(Date())
 
-        val grupo = GrupoModel(nome = nome, criacao = data)
+        val grupo = GrupoModel(0, nome,  data)
 
         if (mGrupoRepository.save(grupo)) {
             mCreate.value = ValidationListener()

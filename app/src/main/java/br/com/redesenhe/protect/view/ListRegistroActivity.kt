@@ -21,7 +21,7 @@ class ListRegistroActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.activty_list_registro_toolbar))
 
         supportActionBar?.apply {
-            title = nomeGrupo
+            title = "nomeGrupo"
         }
 
     }

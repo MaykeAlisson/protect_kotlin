@@ -58,7 +58,7 @@ class GrupoRepository private constructor(context: Context) {
             val c = get.rawQuery(sql, null)
 
             while (c.moveToNext()) {
-                val id = c.getLong(c.getColumnIndex(GRUPO_COLUMN_ID))
+                val id = c.getInt(c.getColumnIndex(GRUPO_COLUMN_ID))
                 val nome = c.getString(c.getColumnIndex(GRUPO_COLUMN_NOME))
                 val grupo = GrupoModel(id, nome, "")
 

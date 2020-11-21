@@ -62,6 +62,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
 
         }
 
+        mAdapter.attachListener(mListener)
+
         // Inicializa eventos
         setListeners()
         observe()
