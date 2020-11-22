@@ -45,6 +45,29 @@ class GrupoRepository private constructor(context: Context) {
 
     }
 
+    fun getById(id: Int): GrupoModel {
+
+        val sql = String.format("SELECT *" +
+                " FROM %s" +
+                " WHERE %s = %s;",
+                TABELA_GRUPO, GRUPO_COLUMN_ID, id)
+
+        val c = get.rawQuery(sql, null)
+
+
+        c.moveToFirst()
+        val nome: kotlin.String = c.getString(c.getColumnIndex(GRUPO_COLUMN_NOME))
+        val criacao: kotlin.String = c.getString(c.getColumnIndex(GRUPO_COLUMN_CRIACAO))
+
+        val grupo = GrupoModel(id, nome, criacao)
+
+        c?.close()
+
+        Log.e(LOG, "Erro ao salvar grupo $grupo")
+        return grupo
+
+    }
+
     fun getAll(): List<GrupoModel> {
 
         val list: MutableList<GrupoModel> = ArrayList()
@@ -66,7 +89,7 @@ class GrupoRepository private constructor(context: Context) {
             }
             c?.close()
             list
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Log.e(LOG, "Erro ao salvar grupo " + e.message)
             list
         }
@@ -76,7 +99,7 @@ class GrupoRepository private constructor(context: Context) {
 
         return try {
             true
-        }catch (e: Exception){
+        } catch (e: Exception) {
             false
         }
     }

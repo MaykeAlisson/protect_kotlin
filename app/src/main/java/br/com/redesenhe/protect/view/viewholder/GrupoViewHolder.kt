@@ -27,7 +27,7 @@ class GrupoViewHolder(itemView: View, private val listener: GrupoListener) :
         this.mTextNome.text = grupo.nome
         this.mImageViewPaste.setImageResource(R.drawable.icone_pasta)
 
-        mGrupo_row_item.setOnClickListener{  listener.onListClick(grupo.id) }
+        mGrupo_row_item.setOnClickListener{  listener.onListClick(grupo.id, grupo.nome) }
 
 
 //        listener.onListClick(grupo.id.toL)

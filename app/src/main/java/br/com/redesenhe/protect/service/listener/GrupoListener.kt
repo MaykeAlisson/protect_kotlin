@@ -5,7 +5,7 @@ interface GrupoListener {
     /**
      * Click para edição
      */
-    fun onListClick(id: Int)
+    fun onListClick(id: Int, nome: String)
 
     /**
      * Remoção

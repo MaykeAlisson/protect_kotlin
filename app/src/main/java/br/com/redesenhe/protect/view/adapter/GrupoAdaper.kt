@@ -36,8 +36,4 @@ class GrupoAdaper : RecyclerView.Adapter<GrupoViewHolder>(){
         notifyDataSetChanged()
     }
 
-    fun getGrupo(position: Int): GrupoModel {
-        return mList[position]
-    }
-
 }

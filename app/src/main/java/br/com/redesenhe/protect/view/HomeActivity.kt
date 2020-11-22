@@ -8,6 +8,7 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.get
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -47,12 +48,11 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
 
         // Eventos disparados ao clicar nas linhas da RecyclerView
         mListener = object : GrupoListener {
-            override fun onListClick(id: Int) {
-                val grupo = mAdapter.getGrupo(id)
+            override fun onListClick(id: Int, nome: String) {
                 val intent = Intent(applicationContext, ListRegistroActivity::class.java)
                 val bundle = Bundle()
                 bundle.putInt(GRUPO_ID, id)
-                bundle.putString(GRUPO_NOME, grupo.nome)
+                bundle.putString(GRUPO_NOME, nome)
                 intent.putExtras(bundle)
                 startActivity(intent)
             }
