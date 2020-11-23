@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/grupo_row_item"
+    android:id="@+id/row_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
@@ -9,13 +9,13 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/grupo_item_icone_mundo"
+        android:id="@+id/row_item_icone_mundo"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:src="@drawable/icone_mundo" />
 
     <TextView
-        android:id="@+id/grupo_item_nome"
+        android:id="@+id/row_item_nome"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -25,7 +25,7 @@
         android:textSize="18sp" />
 
     <ImageView
-        android:id="@+id/grupo_item_icone_key"
+        android:id="@+id/row_item_icone_key"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:src="@drawable/icone_key" />

@@ -15,7 +15,7 @@ class GrupoAdaper : RecyclerView.Adapter<GrupoViewHolder>(){
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GrupoViewHolder {
-        val item = LayoutInflater.from(parent.context).inflate(R.layout.grupo_item, parent, false)
+        val item = LayoutInflater.from(parent.context).inflate(R.layout.row_item, parent, false)
         return GrupoViewHolder(item, mListener)
     }
 

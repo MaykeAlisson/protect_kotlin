@@ -12,10 +12,10 @@ import br.com.redesenhe.protect.service.model.GrupoModel
 class GrupoViewHolder(itemView: View, private val listener: GrupoListener) :
     RecyclerView.ViewHolder(itemView) {
 
-    private val mGrupo_row_item : LinearLayout = itemView.findViewById(R.id.grupo_row_item)
-    private val mImageViewMundo : ImageView = itemView.findViewById(R.id.grupo_item_icone_mundo)
-    private val mTextNome : TextView = itemView.findViewById(R.id.grupo_item_nome)
-    private val mImageViewPaste : ImageView = itemView.findViewById(R.id.grupo_item_icone_key)
+    private val mGrupo_row_item : LinearLayout = itemView.findViewById(R.id.row_item)
+    private val mImageViewMundo : ImageView = itemView.findViewById(R.id.row_item_icone_mundo)
+    private val mTextNome : TextView = itemView.findViewById(R.id.row_item_nome)
+    private val mImageViewPaste : ImageView = itemView.findViewById(R.id.row_item_icone_key)
 
 
     /**

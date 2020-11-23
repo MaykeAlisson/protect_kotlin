@@ -6,16 +6,19 @@ import android.database.sqlite.SQLiteDatabase
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import br.com.redesenhe.protect.service.constants.ProtectConstants
+import br.com.redesenhe.protect.service.constants.ProtectConstants.SYSTEM.LOG
 import br.com.redesenhe.protect.service.model.RegistroModel
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_COMENTARIO
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_CRIACAO
+import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_ID
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_ID_GRUPO
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_NOME
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_SENHA
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_URL
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_USUARIO
+import br.com.redesenhe.protect.service.repository.DBHelper.Companion.TABELA_REGISTRO
 import br.com.redesenhe.protect.util.ChCrypto
+import java.lang.String
 
 class RegistroRepository private constructor(context: Context) {
 
@@ -35,7 +38,7 @@ class RegistroRepository private constructor(context: Context) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    fun save(registro: RegistroModel): Boolean{
+    fun save(registro: RegistroModel): Boolean {
         val cv = ContentValues()
         cv.put(REGISTRO_COLUMN_NOME, registro.nome)
         cv.put(REGISTRO_COLUMN_USUARIO, registro.usuario)
@@ -46,12 +49,55 @@ class RegistroRepository private constructor(context: Context) {
         cv.put(REGISTRO_COLUMN_CRIACAO, registro.dataCriacao)
 
         return try {
-            set.insert(DBHelper.TABELA_REGISTRO, null, cv)
-            Log.i(ProtectConstants.SYSTEM.LOG, "Registro salvo com sucesso!")
+            set.insert(TABELA_REGISTRO, null, cv)
+            Log.i(LOG, "Registro salvo com sucesso!")
             true
         } catch (e: Exception) {
-            Log.e(ProtectConstants.SYSTEM.LOG, "Erro ao salvar Registro " + e.message)
+            Log.e(LOG, "Erro ao salvar Registro " + e.message)
             false
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getAllByGrupo(idGrupo: Int): List<RegistroModel> {
+        val list: MutableList<RegistroModel> = ArrayList()
+
+        return try {
+            val sql = String.format("SELECT *" +
+                    " FROM %s" +
+                    " WHERE %s = %s;",
+                    TABELA_REGISTRO, REGISTRO_COLUMN_ID_GRUPO, idGrupo)
+
+            val c = get.rawQuery(sql, null)
+
+            while (c.moveToNext()) {
+                val id = c.getInt(c.getColumnIndex(REGISTRO_COLUMN_ID))
+                val nome = c.getString(c.getColumnIndex(REGISTRO_COLUMN_NOME))
+                val usuario = c.getString(c.getColumnIndex(REGISTRO_COLUMN_USUARIO))
+                val url = c.getString(c.getColumnIndex(REGISTRO_COLUMN_URL))
+                val senha = c.getString(c.getColumnIndex(REGISTRO_COLUMN_SENHA))
+                val comentario = c.getString(c.getColumnIndex(REGISTRO_COLUMN_COMENTARIO))
+                val grupo = c.getInt(c.getColumnIndex(REGISTRO_COLUMN_ID_GRUPO))
+                val data = c.getString(c.getColumnIndex(REGISTRO_COLUMN_CRIACAO))
+
+                val registro = RegistroModel(
+                        id,
+                        nome,
+                        usuario,
+                        url,
+                        ChCrypto.aesDecrypt(senha),
+                        comentario,
+                        grupo,
+                        data
+                )
+
+                list.add(registro)
+            }
+            c?.close()
+            list
+        } catch (e: Exception) {
+            Log.e(LOG, "Erro ao Buscar Registro " + e.message)
+            list
         }
     }
 
