@@ -9,6 +9,7 @@ import br.com.redesenhe.protect.R
 import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.GRUPO_ID
 import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.GRUPO_NOME
 import br.com.redesenhe.protect.viewmodel.ListRegistroViewModel
+import kotlinx.android.synthetic.main.activity_list_registro.*
 
 class ListRegistroActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -49,7 +50,7 @@ class ListRegistroActivity : AppCompatActivity(), View.OnClickListener {
 
     override fun onClick(view: View) {
         when (view.id) {
-            R.id.fab -> {
+            R.id.activity_list_registro_fab -> {
                 val intent = Intent(applicationContext, NovoRegistroActivity::class.java)
                 intent.putExtra(GRUPO_ID, idGrupo)
                 startActivity(intent)
@@ -61,7 +62,7 @@ class ListRegistroActivity : AppCompatActivity(), View.OnClickListener {
      * Inicializa os eventos de click
      */
     private fun setListeners() {
-//        activity_home_btnAdicionarGrupo.setOnClickListener(this)
+        activity_list_registro_fab.setOnClickListener(this)
     }
 
     /**

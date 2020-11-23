@@ -9,8 +9,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Protect">
-        <activity android:name=".view.NovoRegistroActivity"></activity>
-        <activity android:name=".view.RegistroActivity" />
+        <activity android:name=".view.NovoRegistroActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".view.RegistroActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".view.ListRegistroActivity"
             android:screenOrientation="portrait"

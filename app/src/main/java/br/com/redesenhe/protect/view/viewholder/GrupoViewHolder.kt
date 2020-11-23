@@ -29,8 +29,5 @@ class GrupoViewHolder(itemView: View, private val listener: GrupoListener) :
 
         mGrupo_row_item.setOnClickListener{  listener.onListClick(grupo.id, grupo.nome) }
 
-
-//        listener.onListClick(grupo.id.toL)
-
     }
 }
