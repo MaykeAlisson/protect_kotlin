@@ -1,9 +1,10 @@
 package br.com.redesenhe.protect.view
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import br.com.redesenhe.protect.R
-import br.com.redesenhe.protect.service.constants.ProtectConstants
 import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.REGISTRO_ID
 import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.REGISTRO_NOME
 
@@ -27,5 +28,20 @@ class RegistroActivity : AppCompatActivity() {
         supportActionBar?.apply {
             title = nome
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_registro, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_registro_fechar -> {}
+            R.id.menu_registro_mostrar_senha -> {}
+            R.id.menu_registro_copiar_senha -> {}
+            R.id.menu_registro_copiar_usuario -> {}
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
