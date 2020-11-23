@@ -8,12 +8,16 @@ import androidx.lifecycle.ViewModelProvider
 import br.com.redesenhe.protect.R
 import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.GRUPO_ID
 import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.GRUPO_NOME
+import br.com.redesenhe.protect.service.listener.RegistroListener
+import br.com.redesenhe.protect.view.adapter.GrupoAdaper
 import br.com.redesenhe.protect.viewmodel.ListRegistroViewModel
 import kotlinx.android.synthetic.main.activity_list_registro.*
 
 class ListRegistroActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mViewModel: ListRegistroViewModel
+    private lateinit var mListener: RegistroListener
+    private val mAdapter = RegistroAdapter()
 
     var idGrupo: Int = 0
 
