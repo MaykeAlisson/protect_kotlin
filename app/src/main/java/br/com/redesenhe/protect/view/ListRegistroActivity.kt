@@ -15,9 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import br.com.redesenhe.protect.R
 import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.GRUPO_ID
 import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.GRUPO_NOME
-import br.com.redesenhe.protect.service.listener.GrupoListener
+import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.REGISTRO_ID
+import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.REGISTRO_NOME
 import br.com.redesenhe.protect.service.listener.RegistroListener
-import br.com.redesenhe.protect.view.adapter.GrupoAdaper
 import br.com.redesenhe.protect.view.adapter.RegistroAdapter
 import br.com.redesenhe.protect.viewmodel.ListRegistroViewModel
 import kotlinx.android.synthetic.main.activity_list_registro.*
@@ -57,12 +57,12 @@ class ListRegistroActivity : AppCompatActivity(), View.OnClickListener {
         // Eventos disparados ao clicar nas linhas da RecyclerView
         mListener = object : RegistroListener {
             override fun onListClick(id: Int, nome: String) {
-//                val intent = Intent(applicationContext, ListRegistroActivity::class.java)
-//                val bundle = Bundle()
-//                bundle.putInt(GRUPO_ID, id)
-//                bundle.putString(GRUPO_NOME, nome)
-//                intent.putExtras(bundle)
-//                startActivity(intent)
+                val intent = Intent(applicationContext, RegistroActivity::class.java)
+                val bundle = Bundle()
+                bundle.putInt(REGISTRO_ID, id)
+                bundle.putString(REGISTRO_NOME, nome)
+                intent.putExtras(bundle)
+                startActivity(intent)
             }
 
             override fun onDeleteClick(id: Int) {

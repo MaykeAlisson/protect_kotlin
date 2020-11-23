@@ -10,6 +10,8 @@ class ProtectConstants private constructor(){
         const val VERSION = "1.0.0"
         const val GRUPO_ID = "id"
         const val GRUPO_NOME = "nome"
+        const val REGISTRO_ID = "id"
+        const val REGISTRO_NOME = "nome"
     }
 
     object DATA_BASE {
