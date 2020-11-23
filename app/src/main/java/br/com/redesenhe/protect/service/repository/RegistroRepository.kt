@@ -3,8 +3,11 @@ package br.com.redesenhe.protect.service.repository
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.os.Build
 import android.util.Log
-import br.com.redesenhe.protect.service.constants.ProtectConstants.SYSTEM.LOG
+import androidx.annotation.RequiresApi
+import br.com.redesenhe.protect.service.constants.ProtectConstants
+import br.com.redesenhe.protect.service.model.RegistroModel
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_COMENTARIO
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_CRIACAO
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_ID_GRUPO
@@ -12,7 +15,7 @@ import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_C
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_SENHA
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_URL
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_USUARIO
-import br.com.redesenhe.protect.service.repository.DBHelper.Companion.TABELA_REGISTRO
+import br.com.redesenhe.protect.util.ChCrypto
 
 class RegistroRepository private constructor(context: Context) {
 
@@ -28,6 +31,27 @@ class RegistroRepository private constructor(context: Context) {
                 repository = RegistroRepository(context)
             }
             return repository
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun save(registro: RegistroModel): Boolean{
+        val cv = ContentValues()
+        cv.put(REGISTRO_COLUMN_NOME, registro.nome)
+        cv.put(REGISTRO_COLUMN_USUARIO, registro.usuario)
+        cv.put(REGISTRO_COLUMN_URL, registro.url)
+        cv.put(REGISTRO_COLUMN_SENHA, ChCrypto.aesEncrypt(registro.senha))
+        cv.put(REGISTRO_COLUMN_COMENTARIO, registro.comentario)
+        cv.put(REGISTRO_COLUMN_ID_GRUPO, registro.idGrupo)
+        cv.put(REGISTRO_COLUMN_CRIACAO, registro.dataCriacao)
+
+        return try {
+            set.insert(DBHelper.TABELA_REGISTRO, null, cv)
+            Log.i(ProtectConstants.SYSTEM.LOG, "Registro salvo com sucesso!")
+            true
+        } catch (e: Exception) {
+            Log.e(ProtectConstants.SYSTEM.LOG, "Erro ao salvar Registro " + e.message)
+            false
         }
     }
 

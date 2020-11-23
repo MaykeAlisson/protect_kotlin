@@ -7,14 +7,12 @@ import androidx.lifecycle.MutableLiveData
 import br.com.redesenhe.protect.service.listener.ValidationListener
 import br.com.redesenhe.protect.service.model.GrupoModel
 import br.com.redesenhe.protect.service.repository.GrupoRepository
-import br.com.redesenhe.protect.service.repository.UsuarioRepository
 import java.text.SimpleDateFormat
 import java.util.*
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
     private val mContext = application.applicationContext
-    private val mUsuarioRepository = UsuarioRepository.getInstace(mContext)
     private val mGrupoRepository = GrupoRepository.getInstace(mContext)
 
     private val mCreate = MutableLiveData<ValidationListener>()
