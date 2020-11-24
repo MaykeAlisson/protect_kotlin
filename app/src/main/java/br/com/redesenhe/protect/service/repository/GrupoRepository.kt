@@ -54,7 +54,6 @@ class GrupoRepository private constructor(context: Context) {
 
         val c = get.rawQuery(sql, null)
 
-
         c.moveToFirst()
         val nome: kotlin.String = c.getString(c.getColumnIndex(GRUPO_COLUMN_NOME))
         val criacao: kotlin.String = c.getString(c.getColumnIndex(GRUPO_COLUMN_CRIACAO))

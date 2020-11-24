@@ -59,6 +59,42 @@ class RegistroRepository private constructor(context: Context) {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
+    fun getById(id: Int): RegistroModel {
+        val sql = String.format("SELECT *" +
+                " FROM %s" +
+                " WHERE %s = %s;",
+                TABELA_REGISTRO, REGISTRO_COLUMN_ID, id)
+
+        val c = get.rawQuery(sql, null)
+
+        c.moveToFirst()
+
+        val id = c.getInt(c.getColumnIndex(REGISTRO_COLUMN_ID))
+        val nome = c.getString(c.getColumnIndex(REGISTRO_COLUMN_NOME))
+        val usuario = c.getString(c.getColumnIndex(REGISTRO_COLUMN_USUARIO))
+        val url = c.getString(c.getColumnIndex(REGISTRO_COLUMN_URL))
+        val senha = c.getString(c.getColumnIndex(REGISTRO_COLUMN_SENHA))
+        val comentario = c.getString(c.getColumnIndex(REGISTRO_COLUMN_COMENTARIO))
+        val grupo = c.getInt(c.getColumnIndex(REGISTRO_COLUMN_ID_GRUPO))
+        val data = c.getString(c.getColumnIndex(REGISTRO_COLUMN_CRIACAO))
+
+        val registro = RegistroModel(
+                id,
+                nome,
+                usuario,
+                url,
+                ChCrypto.aesDecrypt(senha),
+                comentario,
+                grupo,
+                data
+        )
+
+        c?.close()
+
+        return registro
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getAllByGrupo(idGrupo: Int): List<RegistroModel> {
         val list: MutableList<RegistroModel> = ArrayList()
 
