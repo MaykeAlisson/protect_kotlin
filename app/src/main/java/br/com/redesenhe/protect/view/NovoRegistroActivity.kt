@@ -97,12 +97,13 @@ class NovoRegistroActivity : AppCompatActivity(), View.OnClickListener, CustomDi
             }
         })
         mViewModel.registroEdit.observe(this, Observer {
-            activity_registro_nome.setText(it.nome)
-            activity_registro_usuario.setText(it.usuario)
-            activity_registro_url.setText(it.url)
-            activity_registro_senha.setText(it.senha)
+
+            activity_novo_registro_nome.setText(it.nome.toString())
+            activity_novo_registro_usuario.setText(it.usuario)
+            activity_novo_registro_url.setText(it.url)
+            activity_novo_registro_senha.setText(it.senha)
             activity_novo_registro_confirmaSenha.setText(it.senha)
-            activity_registro_comentario.setText(it.comentario)
+            activity_novo_registro_comentario.setText(it.comentario)
 
             idGrupo = it.idGrupo
             dataCriacao = it.dataCriacao
