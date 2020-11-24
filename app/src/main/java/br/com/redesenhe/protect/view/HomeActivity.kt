@@ -78,7 +78,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.menu_home_fechar -> {
-                Toast.makeText(this, "Menu Fechar", Toast.LENGTH_LONG).show()
+                val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
             }
             R.id.menu_home_mudar_senha -> {
                 Toast.makeText(this, "Menu Mudar senha master", Toast.LENGTH_LONG).show()

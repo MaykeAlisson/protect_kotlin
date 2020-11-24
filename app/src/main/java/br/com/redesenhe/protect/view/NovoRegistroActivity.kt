@@ -38,11 +38,11 @@ class NovoRegistroActivity : AppCompatActivity(), View.OnClickListener, CustomDi
         val budle = intent.extras
         val id = budle?.getInt(GRUPO_ID)
         val idRegistroEdit = budle?.getInt(REGISTRO_ID)
-        if (id != null) {
+        if (id != null && id != 0) {
             idGrupo = id
         }
 
-        if (idRegistroEdit != null){
+        if (idRegistroEdit != null && idRegistroEdit != 0){
             idRegistro = idRegistroEdit
             loadData(idRegistroEdit)
         }
@@ -145,9 +145,9 @@ class NovoRegistroActivity : AppCompatActivity(), View.OnClickListener, CustomDi
         }
 
         val senha = activity_novo_registro_senha.text.toString()
-        val confirmaSenha = activity_novo_registro_confirmaSenha.toString()
+        val confirmaSenha = activity_novo_registro_confirmaSenha.text.toString()
 
-        if (senha == confirmaSenha) {
+        if (senha != confirmaSenha) {
             activity_novo_registro_confirmaSenha.error = "Senhas diferentes"
             return false
         }

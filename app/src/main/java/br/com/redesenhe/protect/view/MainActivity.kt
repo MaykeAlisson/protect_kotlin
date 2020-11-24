@@ -9,13 +9,16 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import br.com.redesenhe.protect.R
 import br.com.redesenhe.protect.service.constants.ProtectConstants
+import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.VERSION
 import br.com.redesenhe.protect.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import java.lang.String
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
@@ -44,9 +47,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.menu_main_sobre -> {
-                Toast.makeText(this, "Menu Sobre", Toast.LENGTH_LONG).show()
+                openDialogSobre()
             }
             R.id.menu_main_baseDados -> {
                 Toast.makeText(this, "Menu Enviar Base de Dados", Toast.LENGTH_LONG).show()
@@ -60,9 +63,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onClick(view: View) {
-        when(view.id){
+        when (view.id) {
             R.id.activity_main_mostrarSenha -> {
-                if(activity_main_mostrarSenha.isChecked){
+                if (activity_main_mostrarSenha.isChecked) {
                     activity_main_textSenha.inputType = InputType.TYPE_CLASS_TEXT
                     return
                 }
@@ -73,6 +76,19 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 handleLogin()
             }
         }
+    }
+
+    private fun openDialogSobre() {
+        val textoSobre = String.format("""Protect Password e um gerenciador de senha. 
+    Versão: %s 
+    Desenvolvido por: Redesenhe """, VERSION)
+
+        val alerta: AlertDialog
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Sobre")
+        builder.setMessage(textoSobre)
+        alerta = builder.create()
+        alerta.show()
     }
 
     /**
@@ -90,6 +106,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         mViewModel.login.observe(this, Observer {
             if (it.success()) {
                 startActivity(Intent(this, HomeActivity::class.java))
+                finish()
             } else {
                 val msg = it.falure()
                 Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
