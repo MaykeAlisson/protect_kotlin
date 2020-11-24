@@ -17,6 +17,10 @@ class NovoRegistroViewModel(application: Application) : AndroidViewModel(applica
 
     private val mCreate = MutableLiveData<ValidationListener>()
     var create: LiveData<ValidationListener> = mCreate
+    private val mRegistroEdit = MutableLiveData<RegistroModel>()
+    var registroEdit: LiveData<RegistroModel> = mRegistroEdit
+    private val mUpdate = MutableLiveData<ValidationListener>()
+    var update: LiveData<ValidationListener> = mUpdate
 
     /**
      * Criar Registro
@@ -29,6 +33,23 @@ class NovoRegistroViewModel(application: Application) : AndroidViewModel(applica
         }else{
             mCreate.value = ValidationListener("Erro ao Salvar Registro")
             return
+        }
+    }
+
+    /**
+     * Carregar Registro para Editar
+     */
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun doEdit(id: Int){
+        mRegistroEdit.value = mRegistroRepository.getById(id)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun doUpdate(registro: RegistroModel){
+        if (mRegistroRepository.update(registro)){
+            mUpdate.value = ValidationListener()
+        }else{
+            mUpdate.value = ValidationListener("Erro ao Atalizar Registro")
         }
     }
 }

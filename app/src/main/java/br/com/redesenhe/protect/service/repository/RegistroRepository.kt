@@ -137,24 +137,25 @@ class RegistroRepository private constructor(context: Context) {
         }
     }
 
-//    fun update(registro: RegistroModel): Boolean {
-//        val cv = ContentValues()
-//        cv.put(REGISTRO_COLUMN_NOME, registro.getNome())
-//        cv.put(REGISTRO_COLUMN_USUARIO, registro.getUsuario())
-//        cv.put(REGISTRO_COLUMN_URL, registro.getUrl())
-//        cv.put(REGISTRO_COLUMN_SENHA, encriptar(registro.getSenha()))
-//        cv.put(REGISTRO_COLUMN_COMENTARIO, registro.getComentario())
-//        cv.put(REGISTRO_COLUMN_ID_GRUPO, registro.getIdGrupo())
-//        cv.put(REGISTRO_COLUMN_CRIACAO, registro.getDataCriacao())
-//
-//        return try {
-//            val args = arrayOf<String>(registro.getId().toString())
-//            set.update(TABELA_REGISTRO, cv, "id=?", args)
-//            Log.i(LOG, "Registro atualizada com sucesso!")
-//            true
-//        } catch (e: Exception) {
-//            Log.e(LOG, "Erro ao atualizada Registro " + e.message)
-//            false
-//        }
-//    }
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun update(registro: RegistroModel): Boolean {
+        val cv = ContentValues()
+        cv.put(REGISTRO_COLUMN_NOME, registro.nome)
+        cv.put(REGISTRO_COLUMN_USUARIO, registro.usuario)
+        cv.put(REGISTRO_COLUMN_URL, registro.url)
+        cv.put(REGISTRO_COLUMN_SENHA, ChCrypto.aesEncrypt(registro.senha))
+        cv.put(REGISTRO_COLUMN_COMENTARIO, registro.comentario)
+        cv.put(REGISTRO_COLUMN_ID_GRUPO, registro.idGrupo)
+        cv.put(REGISTRO_COLUMN_CRIACAO, registro.dataCriacao)
+
+        return try {
+            val args = arrayOf(registro.id.toString())
+            set.update(TABELA_REGISTRO, cv, "id=?", args)
+            Log.i(LOG, "Registro atualizada com sucesso!")
+            true
+        } catch (e: Exception) {
+            Log.e(LOG, "Erro ao atualizada Registro " + e.message)
+            false
+        }
+    }
 }

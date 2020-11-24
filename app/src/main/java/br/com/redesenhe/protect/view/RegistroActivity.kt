@@ -1,10 +1,15 @@
 package br.com.redesenhe.protect.view
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -56,12 +61,24 @@ class RegistroActivity : AppCompatActivity(), View.OnClickListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_registro_fechar -> {
+                val intent = Intent(this, MainActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
             }
             R.id.menu_registro_mostrar_senha -> {
+                activity_registro_senha.inputType = InputType.TYPE_CLASS_TEXT
             }
             R.id.menu_registro_copiar_senha -> {
+                val clipboard2 = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val clip2 = ClipData.newPlainText("Senha", activity_registro_senha.text.toString())
+                clipboard2.setPrimaryClip(clip2)
+                Toast.makeText(this, "Senha copiada", Toast.LENGTH_LONG).show()
             }
             R.id.menu_registro_copiar_usuario -> {
+                val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+                val clip = ClipData.newPlainText("Usuario", activity_registro_usuario.text.toString())
+                clipboard.setPrimaryClip(clip)
+                Toast.makeText(this, "Usuario copiado", Toast.LENGTH_LONG).show()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -70,6 +87,10 @@ class RegistroActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(view: View) {
         when (view.id) {
             R.id.activity_registro_btnEditar -> {
+                val intent = Intent(applicationContext, NovoRegistroActivity::class.java)
+                intent.putExtra(REGISTRO_ID, idRegistro)
+                startActivity(intent)
+                finish()
             }
         }
     }

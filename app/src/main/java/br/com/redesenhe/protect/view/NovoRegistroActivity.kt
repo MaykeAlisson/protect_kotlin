@@ -10,9 +10,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import br.com.redesenhe.protect.R
 import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.GRUPO_ID
+import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.REGISTRO_ID
 import br.com.redesenhe.protect.service.model.RegistroModel
 import br.com.redesenhe.protect.viewmodel.NovoRegistroViewModel
 import kotlinx.android.synthetic.main.activity_novo_registro.*
+import kotlinx.android.synthetic.main.activity_registro.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -20,8 +22,13 @@ class NovoRegistroActivity : AppCompatActivity(), View.OnClickListener, CustomDi
 
     private lateinit var mViewModel: NovoRegistroViewModel
 
+    // Put Extra
     var idGrupo: Int = 0
 
+    var idRegistro: Int = 0
+    var dataCriacao: String = ""
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_novo_registro)
@@ -30,8 +37,14 @@ class NovoRegistroActivity : AppCompatActivity(), View.OnClickListener, CustomDi
 
         val budle = intent.extras
         val id = budle?.getInt(GRUPO_ID)
+        val idRegistroEdit = budle?.getInt(REGISTRO_ID)
         if (id != null) {
             idGrupo = id
+        }
+
+        if (idRegistroEdit != null){
+            idRegistro = idRegistroEdit
+            loadData(idRegistroEdit)
         }
 
         setSupportActionBar(findViewById(R.id.activty_novo_registro_toolbar))
@@ -83,6 +96,25 @@ class NovoRegistroActivity : AppCompatActivity(), View.OnClickListener, CustomDi
                 Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
             }
         })
+        mViewModel.registroEdit.observe(this, Observer {
+            activity_registro_nome.setText(it.nome)
+            activity_registro_usuario.setText(it.usuario)
+            activity_registro_url.setText(it.url)
+            activity_registro_senha.setText(it.senha)
+            activity_novo_registro_confirmaSenha.setText(it.senha)
+            activity_registro_comentario.setText(it.comentario)
+
+            idGrupo = it.idGrupo
+            dataCriacao = it.dataCriacao
+        })
+        mViewModel.update.observe(this, Observer {
+            if (it.success()) {
+                finish()
+            } else {
+                val msg = it.falure()
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     fun recuperaSenhaGerada(senha: String) {
@@ -103,13 +135,11 @@ class NovoRegistroActivity : AppCompatActivity(), View.OnClickListener, CustomDi
     private fun validaCampos(): Boolean {
         if (activity_novo_registro_nome.text.toString().trim().isEmpty()) {
             activity_novo_registro_nome.error = "Nome obrigatorio!"
-//            Toast.makeText(this, "Nome obrigatorio!", Toast.LENGTH_LONG).show()
             return false
         }
 
         if (activity_novo_registro_senha.text.toString().trim().isEmpty()) {
             activity_novo_registro_senha.error = "Senha obrigatoria!"
-//            Toast.makeText(this, "Senha obrigatoria!", Toast.LENGTH_LONG).show()
             return false
         }
 
@@ -117,13 +147,16 @@ class NovoRegistroActivity : AppCompatActivity(), View.OnClickListener, CustomDi
         val confirmaSenha = activity_novo_registro_confirmaSenha.toString()
 
         if (senha == confirmaSenha) {
-//            activity_novo_registro_senha.error = "Senhas diferentes"
             activity_novo_registro_confirmaSenha.error = "Senhas diferentes"
-//            Toast.makeText(this, "Senhas diferentes!", Toast.LENGTH_LONG).show()
             return false
         }
 
         return true
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun loadData(id: Int){
+        mViewModel.doEdit(id)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -135,9 +168,15 @@ class NovoRegistroActivity : AppCompatActivity(), View.OnClickListener, CustomDi
         val url = activity_novo_registro_url.text.toString()
         val senha = activity_novo_registro_senha.text.toString()
         val comentario = activity_novo_registro_comentario.text.toString()
-        val dataCriacao = SimpleDateFormat("dd-MM-yyyy").format(Date())
+        val criacao = SimpleDateFormat("dd-MM-yyyy").format(Date())
 
-        var registro = RegistroModel(0, nome, usuario, url, senha, comentario, idGrupo, dataCriacao)
+        if (idRegistro != 0){
+            val registro = RegistroModel(idRegistro, nome, usuario, url, senha, comentario, idGrupo, dataCriacao)
+            mViewModel.doUpdate(registro)
+            return
+        }
+
+        val registro = RegistroModel(0, nome, usuario, url, senha, comentario, idGrupo, criacao)
 
         mViewModel.doCreate(registro)
     }
