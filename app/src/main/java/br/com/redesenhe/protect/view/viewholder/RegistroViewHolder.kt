@@ -21,7 +21,7 @@ class RegistroViewHolder(itemView: View, private val listener: RegistroListener)
      */
     fun bindData(registro: RegistroModel) {
 
-        this.mImageViewMundo.setImageResource(R.drawable.icone_mundo)
+        this.mImageViewMundo.setImageResource(R.drawable.registro)
         this.mTextNome.text = registro.nome
         this.mImageViewKey.setImageResource(R.drawable.icone_key)
 
