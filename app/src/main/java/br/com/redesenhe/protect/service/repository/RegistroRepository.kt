@@ -158,4 +158,19 @@ class RegistroRepository private constructor(context: Context) {
             false
         }
     }
+
+    fun delete(id: Int): Boolean{
+        return try {
+            val sql = String.format("DELETE " +
+                    " FROM %s" +
+                    " WHERE %s = %s;",
+                    TABELA_REGISTRO, REGISTRO_COLUMN_ID, id)
+            set.execSQL(sql)
+            Log.e(LOG, "Registro com o id $id Deletado")
+            true
+        }catch (e: Exception){
+            Log.e(LOG, "Erro ao Deletar Registro " + e.message)
+            false
+        }
+    }
 }

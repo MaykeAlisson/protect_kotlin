@@ -10,6 +10,6 @@ interface GrupoListener {
     /**
      * Remoção
      */
-    fun onDeleteClick(id: Int)
+    fun onDeleteClick(id: Int, nome: String)
 
 }

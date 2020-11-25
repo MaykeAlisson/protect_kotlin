@@ -9,7 +9,9 @@ import br.com.redesenhe.protect.service.model.GrupoModel
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.GRUPO_COLUMN_CRIACAO
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.GRUPO_COLUMN_ID
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.GRUPO_COLUMN_NOME
+import br.com.redesenhe.protect.service.repository.DBHelper.Companion.REGISTRO_COLUMN_ID_GRUPO
 import br.com.redesenhe.protect.service.repository.DBHelper.Companion.TABELA_GRUPO
+import br.com.redesenhe.protect.service.repository.DBHelper.Companion.TABELA_REGISTRO
 import java.lang.String
 
 class GrupoRepository private constructor(context: Context) {
@@ -99,6 +101,28 @@ class GrupoRepository private constructor(context: Context) {
         return try {
             true
         } catch (e: Exception) {
+            false
+        }
+    }
+
+    fun delete(id: Int): Boolean{
+        return try {
+            val sql = String.format("DELETE " +
+                    " FROM %s" +
+                    " WHERE %s = %s;",
+                    TABELA_REGISTRO, REGISTRO_COLUMN_ID_GRUPO, id)
+
+            val sql2 = String.format("DELETE " +
+                    " FROM %s" +
+                    " WHERE %s = %s;",
+                    TABELA_GRUPO, GRUPO_COLUMN_ID, id)
+
+            set.execSQL(sql)
+            set.execSQL(sql2)
+            Log.d(LOG, "GRUPO_REPOSITORY - Deletando geristros e grupo com o id $id")
+            true
+        } catch (e: Exception) {
+            Log.e(LOG, "Erro ao Deletar grupo " + e.message)
             false
         }
     }

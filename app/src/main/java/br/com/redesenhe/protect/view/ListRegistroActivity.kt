@@ -3,8 +3,11 @@ package br.com.redesenhe.protect.view
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
+import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -20,6 +23,9 @@ import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.REGISTRO_
 import br.com.redesenhe.protect.service.listener.RegistroListener
 import br.com.redesenhe.protect.view.adapter.RegistroAdapter
 import br.com.redesenhe.protect.viewmodel.ListRegistroViewModel
+import com.afollestad.materialdialogs.MaterialDialog.SingleButtonCallback
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog
+import com.github.javiersantos.materialstyleddialogs.enums.Style
 import kotlinx.android.synthetic.main.activity_list_registro.*
 
 class ListRegistroActivity : AppCompatActivity(), View.OnClickListener {
@@ -65,9 +71,9 @@ class ListRegistroActivity : AppCompatActivity(), View.OnClickListener {
                 startActivity(intent)
             }
 
-            override fun onDeleteClick(id: Int) {
+            override fun onDeleteClick(id: Int, nome: String) {
+                exibeDialogDeletaRegistro(nome, id)
             }
-
         }
 
         mAdapter.attachListener(mListener)
@@ -88,6 +94,23 @@ class ListRegistroActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
+    private fun exibeDialogDeletaRegistro(nome: String, idRegistro: Int){
+        val view = LayoutInflater.from(this).inflate(R.layout.insere_texto_alerta, null)
+        val mTextAlerta = view.findViewById<TextView>(R.id.textMensagem)
+        val mensagem = String.format("Deseja mesmo apagar o registro %s  ?", nome)
+        mTextAlerta.text = mensagem
+
+        val dialog: MaterialStyledDialog = MaterialStyledDialog.Builder(this)
+                .setTitle("Deleta Registro")
+                .setStyle(Style.HEADER_WITH_TITLE)
+                .setCustomView(view, 20, 0, 20, 0)
+                .setNegative("Cancelar", null)
+                .setPositive("Deletar", SingleButtonCallback { dialog, which ->
+                    mViewModel.doDelete(idRegistro)
+                }).build()
+        dialog.show()
+    }
+
     /**
      * Inicializa os eventos de click
      */
@@ -98,10 +121,20 @@ class ListRegistroActivity : AppCompatActivity(), View.OnClickListener {
     /**
      * Observa ViewModel
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun observe() {
         mViewModel.registros.observe(this, Observer {
-            if (it.count() > 0) {
+//            if (it.count() > 0) {
                 mAdapter.updateList(it)
+//            }
+        })
+        mViewModel.delete.observe(this, Observer {
+            if (it.success()) {
+                mAdapter.attachListener(mListener)
+                mViewModel.getAllByGrupo(idGrupo)
+            } else {
+                val msg = it.falure()
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
             }
         })
     }

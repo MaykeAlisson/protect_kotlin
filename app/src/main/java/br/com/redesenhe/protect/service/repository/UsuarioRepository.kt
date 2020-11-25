@@ -82,6 +82,23 @@ class UsuarioRepository private constructor(context: Context) {
             Log.e(LOG, "Erro ao buscar usuario " + e.message)
             usuario
         }
+    }
 
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun update(senha: String): Boolean{
+        return try {
+            val usuario = getUsuario()
+            if (usuario != null){
+                val cv = ContentValues()
+                cv.put(USUARIO_COLUMN_SENHA, ChCrypto.aesEncrypt(senha))
+                val args = arrayOf( usuario.id.toString())
+                set.update(TABELA_USUARIO, cv, "id=?", args)
+                return true
+            }
+            false
+        }catch (e: Exception){
+            Log.e(LOG, "Erro ao Atualizar senha usuario " + e.message)
+            false
+        }
     }
 }

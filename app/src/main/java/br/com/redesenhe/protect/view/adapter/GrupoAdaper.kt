@@ -8,7 +8,7 @@ import br.com.redesenhe.protect.service.listener.GrupoListener
 import br.com.redesenhe.protect.service.model.GrupoModel
 import br.com.redesenhe.protect.view.viewholder.GrupoViewHolder
 
-class GrupoAdaper : RecyclerView.Adapter<GrupoViewHolder>(){
+class GrupoAdaper : RecyclerView.Adapter<GrupoViewHolder>() {
 
     private var mList: List<GrupoModel> = arrayListOf()
     private lateinit var mListener: GrupoListener

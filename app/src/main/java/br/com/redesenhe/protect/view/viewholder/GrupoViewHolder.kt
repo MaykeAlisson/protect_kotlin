@@ -28,6 +28,10 @@ class GrupoViewHolder(itemView: View, private val listener: GrupoListener) :
         this.mImageViewPaste.setImageResource(R.drawable.icone_pasta)
 
         mGrupo_row_item.setOnClickListener{  listener.onListClick(grupo.id, grupo.nome) }
+        mGrupo_row_item.setOnLongClickListener {
+            listener.onDeleteClick(grupo.id, grupo.nome)
+            true
+        }
 
     }
 }

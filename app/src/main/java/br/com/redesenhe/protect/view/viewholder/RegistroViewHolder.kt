@@ -11,10 +11,10 @@ import br.com.redesenhe.protect.service.model.RegistroModel
 
 class RegistroViewHolder(itemView: View, private val listener: RegistroListener) : RecyclerView.ViewHolder(itemView) {
 
-    private val mRegistro_row_item : LinearLayout = itemView.findViewById(R.id.row_item)
-    private val mImageViewMundo : ImageView = itemView.findViewById(R.id.row_item_icone_mundo)
-    private val mTextNome : TextView = itemView.findViewById(R.id.row_item_nome)
-    private val mImageViewKey : ImageView = itemView.findViewById(R.id.row_item_icone_key)
+    private val mRegistro_row_item: LinearLayout = itemView.findViewById(R.id.row_item)
+    private val mImageViewMundo: ImageView = itemView.findViewById(R.id.row_item_icone_mundo)
+    private val mTextNome: TextView = itemView.findViewById(R.id.row_item_nome)
+    private val mImageViewKey: ImageView = itemView.findViewById(R.id.row_item_icone_key)
 
     /**
      * Atribui valores aos elementos de interface e também eventos
@@ -25,7 +25,11 @@ class RegistroViewHolder(itemView: View, private val listener: RegistroListener)
         this.mTextNome.text = registro.nome
         this.mImageViewKey.setImageResource(R.drawable.icone_key)
 
-        mRegistro_row_item.setOnClickListener{  listener.onListClick(registro.id, registro.nome) }
+        mRegistro_row_item.setOnClickListener { listener.onListClick(registro.id, registro.nome) }
+        mRegistro_row_item.setOnLongClickListener {
+            listener.onDeleteClick(registro.id, registro.nome)
+            true
+        }
 
     }
 

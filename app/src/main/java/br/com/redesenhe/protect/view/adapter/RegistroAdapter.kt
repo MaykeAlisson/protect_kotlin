@@ -8,13 +8,13 @@ import br.com.redesenhe.protect.service.listener.RegistroListener
 import br.com.redesenhe.protect.service.model.RegistroModel
 import br.com.redesenhe.protect.view.viewholder.RegistroViewHolder
 
-class RegistroAdapter: RecyclerView.Adapter<RegistroViewHolder>() {
+class RegistroAdapter : RecyclerView.Adapter<RegistroViewHolder>() {
 
-    private var mList : List<RegistroModel> = arrayListOf()
-    private lateinit var mListener : RegistroListener
+    private var mList: List<RegistroModel> = arrayListOf()
+    private lateinit var mListener: RegistroListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RegistroViewHolder {
-       val item = LayoutInflater.from(parent.context).inflate(R.layout.row_item, parent, false)
+        val item = LayoutInflater.from(parent.context).inflate(R.layout.row_item, parent, false)
         return RegistroViewHolder(item, mListener)
     }
 

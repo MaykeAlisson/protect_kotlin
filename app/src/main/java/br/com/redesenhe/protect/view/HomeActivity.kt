@@ -1,12 +1,17 @@
 package br.com.redesenhe.protect.view
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +24,9 @@ import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.GRUPO_NOM
 import br.com.redesenhe.protect.service.listener.GrupoListener
 import br.com.redesenhe.protect.view.adapter.GrupoAdaper
 import br.com.redesenhe.protect.viewmodel.HomeViewModel
+import com.afollestad.materialdialogs.MaterialDialog.SingleButtonCallback
+import com.github.javiersantos.materialstyleddialogs.MaterialStyledDialog
+import com.github.javiersantos.materialstyleddialogs.enums.Style
 import kotlinx.android.synthetic.main.activity_home.*
 
 class HomeActivity : AppCompatActivity(), View.OnClickListener,
@@ -56,7 +64,8 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
                 startActivity(intent)
             }
 
-            override fun onDeleteClick(id: Int) {
+            override fun onDeleteClick(id: Int, nome: String) {
+                exibeDialogDeletaGrupo(nome, id)
             }
 
         }
@@ -83,7 +92,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
                 startActivity(intent)
             }
             R.id.menu_home_mudar_senha -> {
-                Toast.makeText(this, "Menu Mudar senha master", Toast.LENGTH_LONG).show()
+                openMudarSenhaMaster()
             }
         }
 
@@ -116,6 +125,50 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
         mViewModel.doCreate(nome)
     }
 
+    private fun exibeDialogDeletaGrupo(nomeGrupo: String, id: Int){
+        val view: View = LayoutInflater.from(this).inflate(R.layout.insere_texto_alerta, null)
+        val mTextAlerta = view.findViewById<TextView>(R.id.textMensagem)
+        val mensagem = String.format("Ao apagar o grupo %s todos os registros do grupo sera apagado. Deseja Continuar ?", nomeGrupo)
+        mTextAlerta.text = mensagem
+
+        val dialog: MaterialStyledDialog = MaterialStyledDialog.Builder(this)
+                .setTitle("Deleta Grupo")
+                .setStyle(Style.HEADER_WITH_TITLE)
+                .setCustomView(view, 20, 0, 20, 0)
+                .setNegative("Cancelar", null)
+                .setPositive("Deletar", SingleButtonCallback { dialog, which ->
+                    mViewModel.doDelete(id)
+                }).build()
+        dialog.show()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun openMudarSenhaMaster(){
+        val view: View = LayoutInflater.from(this).inflate(R.layout.layout_mudar_senha_master, null)
+        val inputSenha = view.findViewById<EditText>(R.id.layout_mudar_senha_senha)
+        val inputConfimaSenha = view.findViewById<EditText>(R.id.layout_mudar_senha_confirmaSenha)
+
+
+        val dialog: MaterialStyledDialog = MaterialStyledDialog.Builder(this)
+                .setIcon(R.drawable.icone_key)
+                .setCustomView(view, 20, 20, 20, 0)
+                .setNegative("Cancelar", null)
+                .setPositive("Salvar", SingleButtonCallback { dialog, which ->
+                    if (inputSenha.text.toString().trim().isEmpty()) {
+                        Toast.makeText(applicationContext, "Senha invalida!", Toast.LENGTH_LONG).show()
+                        return@SingleButtonCallback
+                    }
+                    if (inputSenha.text.toString() != inputConfimaSenha.text.toString()) {
+                        Toast.makeText(applicationContext, "Senhas diferentes!", Toast.LENGTH_LONG).show()
+                        return@SingleButtonCallback
+                    }
+                    val senha = inputSenha.text.toString()
+                    mViewModel.doUpdate(senha)
+                })
+                .build()
+        dialog.show()
+    }
+
     /**
      * Inicializa os eventos de click
      */
@@ -137,8 +190,25 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
             }
         })
         mViewModel.grupos.observe(this, Observer {
-            if (it.count() > 0) {
-                mAdapter.updateList(it)
+//            if (it.count() > 0) {
+            mAdapter.updateList(it)
+//            }
+        })
+        mViewModel.delete.observe(this, Observer {
+            if (it.success()) {
+                mAdapter.attachListener(mListener)
+                mViewModel.getAll()
+            } else {
+                val msg = it.falure()
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+            }
+        })
+        mViewModel.updateSenha.observe(this, Observer {
+            if (it.success()) {
+                Toast.makeText(applicationContext, "Senha alterada com sucesso", Toast.LENGTH_SHORT).show()
+            } else {
+                val msg = it.falure()
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
             }
         })
     }
