@@ -83,6 +83,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
         return super.onCreateOptionsMenu(menu)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @Override
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
@@ -190,9 +191,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
             }
         })
         mViewModel.grupos.observe(this, Observer {
-//            if (it.count() > 0) {
             mAdapter.updateList(it)
-//            }
         })
         mViewModel.delete.observe(this, Observer {
             if (it.success()) {
