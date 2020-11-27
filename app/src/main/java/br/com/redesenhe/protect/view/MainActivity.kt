@@ -3,6 +3,7 @@ package br.com.redesenhe.protect.view
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
@@ -16,13 +17,16 @@ import androidx.lifecycle.ViewModelProvider
 import br.com.redesenhe.protect.R
 import br.com.redesenhe.protect.service.constants.ProtectConstants
 import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.VERSION
+import br.com.redesenhe.protect.util.Permissions
 import br.com.redesenhe.protect.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 import java.lang.String
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mViewModel: MainViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,10 +56,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 openDialogSobre()
             }
             R.id.menu_main_baseDados -> {
-                Toast.makeText(this, "Menu Enviar Base de Dados", Toast.LENGTH_LONG).show()
+                Permissions.verifyStoragePermissions(this)
+                mViewModel.exportarDb()
             }
             R.id.menu_main_import_base -> {
-                Toast.makeText(this, "Menu Importar Base", Toast.LENGTH_LONG).show()
+                mViewModel.importDb()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -107,6 +112,22 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             if (it.success()) {
                 startActivity(Intent(this, HomeActivity::class.java))
                 finish()
+            } else {
+                val msg = it.falure()
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+            }
+        })
+        mViewModel.exportDb.observe(this, Observer {
+            if (it.success()) {
+                Toast.makeText(applicationContext, "Backup criado ", Toast.LENGTH_SHORT).show()
+            } else {
+                val msg = it.falure()
+                Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
+            }
+        })
+        mViewModel.importDb.observe(this, Observer {
+            if (it.success()) {
+                Toast.makeText(applicationContext, "Backup restaurado ", Toast.LENGTH_SHORT).show()
             } else {
                 val msg = it.falure()
                 Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()

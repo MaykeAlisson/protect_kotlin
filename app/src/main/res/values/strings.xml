@@ -3,7 +3,7 @@
 
     <!-- Menu -->
     <string name="sobre">Sobre</string>
-    <string name="enviar_base_de_dados">Enviar base de dados</string>
+    <string name="enviar_base_de_dados">Criar Backup</string>
     <string name="importar_base_de_dados">Importar base de dados</string>
     <string name="fechar">Fechar</string>
     <string name="mudar_senha_mestre">Mudar Senha Mestre</string>

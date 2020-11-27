@@ -15,12 +15,13 @@ class ProtectConstants private constructor(){
     }
 
     object DATA_BASE {
-        const val NAME = "db_protect"
+        const val NAME = "protect.db"
         const val VERSION = 1
     }
 
     object SYSTEM {
         const val LOG = "protect_log"
+        const val REQUEST_CODE_PERMISSIONS = 2
     }
 
 }
