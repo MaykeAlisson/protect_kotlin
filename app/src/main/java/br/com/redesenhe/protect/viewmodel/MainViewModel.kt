@@ -1,17 +1,20 @@
 package br.com.redesenhe.protect.viewmodel
 
 import android.app.Application
+import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.USE_BIOMETRIA
 import br.com.redesenhe.protect.service.constants.ProtectConstants.SYSTEM.LOG
 import br.com.redesenhe.protect.service.listener.ValidationListener
 import br.com.redesenhe.protect.service.model.UsuarioModel
 import br.com.redesenhe.protect.service.repository.UsuarioRepository
 import br.com.redesenhe.protect.util.SystemBackupService
+
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -26,6 +29,9 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     private val mImportDb = MutableLiveData<ValidationListener>()
     var importDb: LiveData<ValidationListener> = mImportDb
+
+    private val mUseBiometria = MutableLiveData<Boolean>()
+    var useBiometria: LiveData<Boolean> = mUseBiometria
 
     /**
      * Fazer Login
@@ -66,6 +72,18 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun importDb() {
         mImportDb.value = SystemBackupService.importDB()
+    }
+
+    fun setPrefBiometria(value: Boolean){
+        val prefs = mContext.getSharedPreferences(USE_BIOMETRIA, Context.MODE_PRIVATE)
+        val editor = prefs.edit()
+        editor.putBoolean("value", value)
+        editor.apply()
+    }
+
+    fun getPrefBiometria(){
+        val prefs = mContext.getSharedPreferences(USE_BIOMETRIA, Context.MODE_PRIVATE) ?: return
+        mUseBiometria.value = prefs.getBoolean("value", false)
     }
 
 }

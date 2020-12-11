@@ -3,7 +3,6 @@ package br.com.redesenhe.protect.view
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
@@ -12,6 +11,8 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import br.com.redesenhe.protect.R
@@ -20,12 +21,16 @@ import br.com.redesenhe.protect.service.constants.ProtectConstants.APP.VERSION
 import br.com.redesenhe.protect.util.Permissions
 import br.com.redesenhe.protect.viewmodel.MainViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
 import java.lang.String
+import java.util.concurrent.Executor
+
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mViewModel: MainViewModel
+    private lateinit var executor: Executor
+    private lateinit var biometricPrompt: BiometricPrompt
+    private lateinit var promptInfo: BiometricPrompt.PromptInfo
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,6 +48,45 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         // Inicializa eventos
         setListeners()
         observe()
+
+        // Biometria
+        executor = ContextCompat.getMainExecutor(this)
+        biometricPrompt = BiometricPrompt(this, executor,
+            object : BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationError(
+                    errorCode: Int,
+                    errString: CharSequence
+                ) {
+                    super.onAuthenticationError(errorCode, errString)
+                    Toast.makeText(
+                        applicationContext,
+                        "Authentication falha: $errString codigo $errorCode", Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+
+                override fun onAuthenticationSucceeded(
+                    result: BiometricPrompt.AuthenticationResult
+                ) {
+                    super.onAuthenticationSucceeded(result)
+                    onLoginBiometria()
+                }
+
+                override fun onAuthenticationFailed() {
+                    super.onAuthenticationFailed()
+                    Toast.makeText(
+                        applicationContext, "Biometria Invalida",
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                }
+            })
+
+        promptInfo = BiometricPrompt.PromptInfo.Builder()
+            .setTitle("Login com Biometria")
+            .setSubtitle("Protect Login")
+            .setNegativeButtonText("Use Senha")
+            .build()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -74,19 +118,33 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     activity_main_textSenha.inputType = InputType.TYPE_CLASS_TEXT
                     return
                 }
-                activity_main_textSenha.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                activity_main_textSenha.inputType =
+                    InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
 
             }
+            R.id.activity_main_biometria -> {
+                if (activity_main_biometria.isChecked) {
+                    mViewModel.setPrefBiometria(true)
+                    return
+                }
+                mViewModel.setPrefBiometria(false)
+            }
             R.id.activity_main_btnEntrar -> {
-                handleLogin()
+                if (activity_main_biometria.isChecked) {
+                    biometricPrompt.authenticate(promptInfo)
+                } else {
+                    handleLogin()
+                }
             }
         }
     }
 
     private fun openDialogSobre() {
-        val textoSobre = String.format("""Protect Password e um gerenciador de senha. 
+        val textoSobre = String.format(
+            """Protect Password e um gerenciador de senha. 
     Versão: %s 
-    Desenvolvido por: Redesenhe """, VERSION)
+    Desenvolvido por: Redesenhe """, VERSION
+        )
 
         val alerta: AlertDialog
         val builder = AlertDialog.Builder(this)
@@ -133,6 +191,9 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 Toast.makeText(applicationContext, msg, Toast.LENGTH_SHORT).show()
             }
         })
+        mViewModel.useBiometria.observe(this, Observer {
+            activity_main_biometria.isChecked = it
+        })
     }
 
     /**
@@ -148,4 +209,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
         mViewModel.doLogin(senha)
     }
+
+    private fun onLoginBiometria(){
+        startActivity(Intent(this, HomeActivity::class.java))
+        finish()
+    }
+
 }
